@@ -1,24 +1,34 @@
 #!/bin/bash
 
-rm -rf graphe.xdot
-rm -rf graphe.pdf
+rm -rf graphe.dot
 
-len=1
-echo "digraph {" >> graphe.xdot
-for file in ip.route
+echo "--------------------------------------------"
+echo "M3102 - Script Graphique XDOT - ROLAND Louis"
+echo "--------------------------------------------"
+
+echo "Tous les fichiers .rte présents dans le répertoire courant seront utilisés pour créer le graphique"
+echo "--------------------------------------------"
+
+rm -rf graphe.dot
+longueur=1
+echo "digraph A {" >> graphe.dot
+for file in *.rte
 do
-	
-	nb=$(wc -l $file|cut -d " " -f 1)
-	while [ $len -lt $nb ]
+	echo "OK - $file"
+	server=`echo $file | sed 's/.rte//g'`
+	taille=$(wc -l $file|cut -d " " -f 1)
+	while [ $longueur -lt $taille ]
 	do
-		len1=$(($len + 1))
-		a=$(cat $file|head -n $len1|tail -n 1)
-		b=$(cat $file|head -n $len|tail -n 1)
-		((len+=1))
-		echo "\"$b\"->\"$a\" [label=\"$file\"]" >> graphe.xdot
+		longueur1=$(($longueur + 1))
+		ipa=$(cat $file|head -n $longueur1|tail -n 1)
+		ipb=$(cat $file|head -n $longueur|tail -n 1)
+		((longueur+=1))
+		echo "\"$ipb\"->\"$ipa\"" >> graphe.dot
 	done
-	len=1
+	longueur=1
 done
-echo } >> graphe.xdot
-dot -Tpdf graphe.xdot -o graphe.pdf
-atril graphe.pdf
+echo } >> graphe.dot
+
+echo "--------------------------------------------"
+echo "La création du graphique s'est déroulée correctement"
+echo "Fermeture du programme..."
