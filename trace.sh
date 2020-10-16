@@ -33,11 +33,11 @@ for ttl in `seq 1 30`; do
 		echo "TTL $ttl : traceroute -n -A -f$ttl -m$ttl ${protocole[option]} $ip"
 		
 		#declare route command and as command
-        trace=`traceroute -n -A -f$ttl -m$ttl ${protocole[option]} $ip |tail -n1|awk '{print $2}'|sed 's/*/°/g'`
-        as=`traceroute -n -A -f$ttl -m$ttl ${protocole[option]} $ip |tail -n1|awk '{print $3}'`
+      		trace=`traceroute -n -A -f$ttl -m$ttl ${protocole[option]} $ip |tail -n1|awk '{print $2}'|sed 's/*/°/g'`
+        	as=`traceroute -n -A -f$ttl -m$ttl ${protocole[option]} $ip |tail -n1|awk '{print $3}'`
         
-        #return result for route and as
-        echo "$trace $as";echo
+        	#return result for route and as
+        	echo "$trace $as";echo
 		
 		#if route = ip, write last route and as in .rte and close the script
 		if [[ $trace == $ip ]]; then
@@ -51,6 +51,7 @@ for ttl in `seq 1 30`; do
 		
 		#if route not found, write blank and as in .rte
 		if [[ $trace == '°' ]]; then
+			# write blank and as if last option is used
 			if [ $option -eq 5 ]; then
 				echo "$1 blank$a $as" >> $1.rte
 				a=$((a+1))
