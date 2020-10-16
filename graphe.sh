@@ -2,33 +2,40 @@
 
 rm -rf graphe.dot
 
+if_rte=${1:?"Veuillez indiquer au moins un fichier .rte"}
+
 echo "--------------------------------------------"
 echo "M3102 - Script Graphique XDOT - ROLAND Louis"
 echo "--------------------------------------------"
-
+echo "./graphe.sh [.rte]"
 echo "Tous les fichiers .rte présents dans le répertoire courant seront utilisés pour créer le graphique"
 echo "--------------------------------------------"
 
-rm -rf graphe.dot
-longueur=1
-echo "digraph A {" >> graphe.dot
-for file in *.rte
+nb=`ls -l | grep .rte | wc -l`
+echo "$nb fichier .rte présents"
+a=1
+
+echo "digraph graphe {" >> graphe.dot
+for file in $@
 do
+	declare -a color=($(hexdump -n 3 -v -e '"#" 3/1 "%02X" "\n"' /dev/urandom))
 	echo "OK - $file"
 	server=`echo $file | sed 's/.rte//g'`
-	taille=$(wc -l $file|cut -d " " -f 1)
-	while [ $longueur -lt $taille ]
+	len=$(wc -l $file|cut -d " " -f 1)
+	while [ $a -lt $len ]
 	do
-		longueur1=$(($longueur + 1))
-		ipa=$(cat $file|head -n $longueur1|tail -n 1)
-		ipb=$(cat $file|head -n $longueur|tail -n 1)
-		((longueur+=1))
-		echo "\"$ipb\"->\"$ipa\"" >> graphe.dot
+		b=$(($a + 1))
+		src=$(cat $file|head -n $a|tail -n 1)
+		dst=$(cat $file|head -n $b|tail -n 1)
+		((a++))
+		echo "\"$src\"->\"$dst\"[color=\"${color}\"]"  ";" >> graphe.dot
 	done
-	longueur=1
+	echo "\"$dst\"->\"$server\"[arrowhead=none,penwidth=2]" >> graphe.dot
+	a=1
 done
-echo } >> graphe.dot
+echo "}" >> graphe.dot
 
 echo "--------------------------------------------"
-echo "La création du graphique s'est déroulée correctement"
+echo "La création du graphique 'graphe.dot' s'est déroulée correctement"
 echo "Fermeture du programme..."
+echo "--------------------------------------------"
