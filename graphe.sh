@@ -33,7 +33,7 @@ do
 	server=`echo $file | sed 's/.rte//g'`
 	
 	#set length of the file
-	len=$(wc -l $file|cut -d" " -f1)
+	len=$(wc -l $file|awk '{print $1}')
 	
 	#write .dot while addr1 < file length
 	while [ $line1 -lt $len ]
